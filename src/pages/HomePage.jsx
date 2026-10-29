@@ -5,7 +5,6 @@ import { INITIAL_REPRESENTATIVE } from '../data/constituencyData';
 import { RepresentativeEmblem } from '../components/RepresentativeEmblem';
 import { getNewsList, getProjectsList } from '../services/dataService';
 import {
-  ShieldCheck,
   ArrowRight,
   Search,
   FileText,
@@ -13,17 +12,12 @@ import {
   CheckCircle2,
   TrendingUp,
   MapPin,
-  Clock,
   Sparkles,
   Calendar,
-  Building2,
-  PhoneCall,
-  Activity,
-  Layers,
-  ChevronRight
+  Building2
 } from 'lucide-react';
 
-export const HomePage = ({ setActivePage, onOpenRegister, onOpenAuth, onTrackId }) => {
+export const HomePage = ({ setActivePage, onOpenRegister, onTrackId }) => {
   const { language, t } = useLanguage();
   const { currentUser } = useAuth();
   const [quickTrackId, setQuickTrackId] = useState('');
@@ -48,9 +42,6 @@ export const HomePage = ({ setActivePage, onOpenRegister, onOpenAuth, onTrackId 
     }
     setActivePage('track');
   };
-
-  const repName = INITIAL_REPRESENTATIVE.name[language] || INITIAL_REPRESENTATIVE.name.en;
-  const repTitle = INITIAL_REPRESENTATIVE.title[language] || INITIAL_REPRESENTATIVE.title.en;
 
   return (
     <div className="space-y-16 pb-16">
