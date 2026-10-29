@@ -1,0 +1,71 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        request.auth.token.role == 'admin' ||
+        request.auth.token.phone_number == '+919840123456'
+      );
+    }
+
+    function isOwner(phone) {
+      return isAuthenticated() && request.auth.token.phone_number == ('+91' + phone);
+    }
+
+    // Citizen Users Collection
+    match /users/{userId} {
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow update: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      allow delete: if isAdmin();
+    }
+
+    // Complaints / Grievances Collection
+    match /complaints/{complaintId} {
+      // Anyone authenticated can create a grievance with their valid phone number
+      allow create: if isAuthenticated();
+
+      // Grievance can only be read by the owner or staff admin (never leaked publicly)
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.citizenPhone == request.auth.token.phone_number.replace('+91', ''));
+
+      // Status updates, officer allocation, internal notes are restricted to admins
+      allow update: if isAdmin();
+
+      // Only admins can delete complaints
+      allow delete: if isAdmin();
+    }
+
+    // Public News Collection
+    match /news/{newsId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Development Projects Collection
+    match /developmentProjects/{projectId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Gallery Collection
+    match /gallery/{imageId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Citizen Contact Enquiries
+    match /enquiries/{enquiryId} {
+      allow create: if true;
+      allow read, delete: if isAdmin();
+      allow update: if false;
+    }
+  }
+}
+

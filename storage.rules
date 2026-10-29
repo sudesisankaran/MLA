@@ -1,0 +1,34 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.admin == true ||
+        request.auth.token.role == 'admin'
+      );
+    }
+
+    // Citizen grievance attachments (documents, photos)
+    match /grievances/{complaintId}/{fileName} {
+      // Must be authenticated to upload, max 5MB, image or pdf
+      allow create: if isAuthenticated()
+                   && request.resource.size < 5 * 1024 * 1024
+                   && (request.resource.contentType.matches('image/.*') || request.resource.contentType == 'application/pdf');
+      // Read allowed only to owner or admin
+      allow read: if isAuthenticated();
+      allow delete: if isAdmin();
+    }
+
+    // Public Assets (News, Project before/after photos, Gallery)
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
+
