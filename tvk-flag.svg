@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <!-- Rounded Shield / Emblem -->
+  <rect width="64" height="64" rx="16" fill="#8B0000"/>
+  <!-- Central Yellow Stripe / Shield -->
+  <rect x="12" y="8" width="40" height="48" rx="8" fill="#F59E0B" stroke="#FEF08A" stroke-width="2"/>
+  <!-- Central Maroon Star / Victory Torch -->
+  <path d="M32 16L36 26H46L38 32L41 42L32 36L23 42L26 32L18 26H28L32 16Z" fill="#8B0000" stroke="#FFFBEB" stroke-width="1.5"/>
+  <circle cx="32" cy="50" r="3" fill="#8B0000"/>
+</svg>
+
